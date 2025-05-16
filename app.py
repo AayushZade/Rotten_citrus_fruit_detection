@@ -22,7 +22,7 @@ def predict():
         gas = int(data['gas'])
 
         features = np.array([[temp, humidity, gas]])
-        prediction = model.predict(features)[0]
+        prediction = int(model.predict(features)[0])  # Ensure it's JSON serializable
 
         return jsonify({
             'status': 'success',
@@ -33,6 +33,7 @@ def predict():
             'status': 'error',
             'message': str(e)
         })
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
