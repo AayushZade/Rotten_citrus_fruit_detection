@@ -12,6 +12,7 @@ model = joblib.load('random_forest_model.joblib')  # Replace with your filename
 def home():
     return "ML API is running!"
 
+
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.get_json()
@@ -22,11 +23,18 @@ def predict():
         gas = int(data['gas'])
 
         features = np.array([[temp, humidity, gas]])
-        prediction = int(model.predict(features)[0])  # Ensure it's JSON serializable
+        pred_numeric = int(model.predict(features)[0])  # Ensure JSON serializable
+
+        # Map numeric prediction to label
+        label_map = {
+            0: "Fresh",
+            1: "Spoiled"
+        }
+        prediction_label = label_map.get(pred_numeric, "Unknown")
 
         return jsonify({
             'status': 'success',
-            'prediction': prediction
+            'prediction': prediction_label
         })
     except Exception as e:
         return jsonify({
